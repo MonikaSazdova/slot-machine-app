@@ -1,15 +1,10 @@
 import React from "react"
-import "./styles/App.css"
-import SlotTable from "./components/SlotTable";
-// import RollButton from "./components/RollButton";
-// import CashButton from "./components/CashButton";
-// import ScoreTracker from "./components/ScoreTracker";
-
+import SlotMachine from "./components/SlotMachine";
 
 const App = () =>
 {
 	return (
-    <SlotTable />
+    <SlotMachine />
 	)
 }
 

@@ -1,0 +1,1 @@
+export 	const slotOptions = ['C', 'L', 'O', 'W'];
