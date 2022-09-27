@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import "../styles/CashButton.css";
 import { SLOT, CLASS_NAMES } from "../texts/strings";
-import { pureRandom } from "../helpers";
+import { getPureRandom } from "../helpers";
 
 const CashButton = ({ onClick }) => {
   const ref = useRef();
@@ -16,7 +16,7 @@ const CashButton = ({ onClick }) => {
   };
 
   const onHover = () => {
-    const d = pureRandom();
+    const d = getPureRandom();
     if (d < 0.5) {
       moveBtnRand(ref.current);
     } else if (d < 0.9) {

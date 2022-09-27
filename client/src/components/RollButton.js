@@ -4,7 +4,7 @@ import "../styles/RollButton.css";
 
 const RollButton = ({ onClick }) => {
   return (
-    <button className={CLASS_NAMES.cashBtn} onClick={onClick}>
+    <button className={CLASS_NAMES.rollBtn} onClick={onClick}>
       {SLOT.rollButton}
     </button>
   );

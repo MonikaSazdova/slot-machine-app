@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import RollButton from "./RollButton";
 import SlotTable from "./SlotTable";
 import CashButton from "./CashButton";
-import { getRandomEl, pureRandom } from "../helpers";
+import { getRandomEl, getPureRandom } from "../helpers";
 import { slotOptions } from "../constants/slotConstants";
 import { SLOT, CLASS_NAMES } from "../texts/strings";
 import "../styles/SlotMachine.css";
@@ -57,7 +57,7 @@ const SlotMachine = () => {
     if (rollReward <= 0) {
       return rollReward;
     }
-    let cheatingScore = pureRandom();
+    let cheatingScore = getPureRandom();
     if (credits <= 60 && cheatingScore < 0.3) {
       return machineRoll();
     }
