@@ -8,12 +8,8 @@ const { getSlots, machineRoll, userRoll, calculatePoints } = require("./helpers/
 const slotOptions = ["C", "L", "O", "W"];
 const users = {}
 let credits = 10;
-let slots = {
-    slotOne: "X",
-    slotTwo: "XX",
-    slotThree: "XXX",
-}
-
+let slots = {};
+//I had issue with CORS and I was not able to use express-session (I instead created a mock db by defining users, credits and slots)
 app.use(
   session({
     name: "RollSession",
@@ -44,11 +40,12 @@ app.get("/roll/:id", function (req, res) {
     res.header("Access-Control-Allow-Origin", "*");
   if (user.credits || user.credits === 0) {
     let [slot1, slot2, slot3] = getSlots(slotOptions);
-    user.slots = { slot1, slot2, slot3 };
     let machineRollResult = machineRoll(slot1, slot2, slot3);
     let rollReward = userRoll(user.credits, machineRollResult);
-   user.credits = calculatePoints(user.credits, rollReward);
-    res.json({credits: user.credits, slots: user.slots});
+    user.credits = calculatePoints(user.credits, rollReward);
+    user.slots = { slot1, slot2, slot3 };
+    console.log('CREDITS', user.credits, 'SLOTS', user.slots)
+    res.json({credits: user.credits, slots: user.slots, id: user});
     res.end();
   } else {
     res.end("Refresh");
@@ -59,8 +56,7 @@ app.get("/roll/:id", function (req, res) {
 app.get("/cash-out/:id", function (req, res) {
   const user = users[req.params.id]
   res.header("Access-Control-Allow-Origin", "*");
-  res.json({credits: user.credits});
-  req.session.destroy();
+  res.json({credits: user.credits, slots: {}, id: null});
   res.end()
 })
 

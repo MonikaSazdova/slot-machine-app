@@ -2,90 +2,49 @@ import React, { useState, useEffect } from "react";
 import RollButton from "./RollButton";
 import SlotTable from "./SlotTable";
 import CashButton from "./CashButton";
-import { getRandomEl, getPureRandom } from "../helpers";
-import { slotOptions } from "../constants/slotConstants";
 import { SLOT, CLASS_NAMES } from "../texts/strings";
 import "../styles/SlotMachine.css";
+const axios = require("axios");
 
 const SlotMachine = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const [slotOne, setSlotOne] = useState("?");
   const [slotTwo, setSlotTwo] = useState("??");
   const [slotThree, setSlotThree] = useState("???");
-  const [credits, setCredits] = useState(10);
+  const [credits, setCredits] = useState(0);
   const [account, setAccount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false)
+  const [userId, setUserId] = useState(null)
 
   useEffect(() => {
     setIsLoading(true);
-    if (isLoading) {
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
-    }
-  }, [isLoading]);
+    const apiUrl = 'http://localhost:8000/';
+    axios.get(apiUrl).then((res) => {
+      const data = res.data;
+      const {id, credits} = data
+      setUserId(id)
+      setCredits(credits)
+    });
+  }, []);
 
-  useEffect(() => {
-    setCredits(credits);
-  }, [credits]);
-
-  const getSlots = () => [
-    getRandomEl(slotOptions),
-    getRandomEl(slotOptions),
-    getRandomEl(slotOptions),
-  ];
-
-  const machineRoll = () => {
-    const areValuesEqual = slotOne === slotTwo && slotTwo === slotThree;
-    const result =
-      areValuesEqual === false
-        ? 0
-        : slotOne === "C"
-        ? 10
-        : slotOne === "L"
-        ? 20
-        : slotOne === "O"
-        ? 30
-        : 40;
-    return result;
-  };
-
-  const userRoll = () => {
-    let rollReward = machineRoll();
-    if (credits < 40) {
-      return rollReward;
-    }
-    if (rollReward <= 0) {
-      return rollReward;
-    }
-    let cheatingScore = getPureRandom();
-    if (credits <= 60 && cheatingScore < 0.3) {
-      return machineRoll();
-    }
-    if (credits > 60 && cheatingScore < 0.6) {
-      return machineRoll();
-    }
-    console.log("ROLL REWARD:", rollReward);
-    return rollReward;
-  };
-
-  const calculatePoints = (points) => {
-    setCredits(points - 1 + userRoll());
-  };
 
   const handleRollCLick = () => {
-    calculatePoints(credits);
     isLoading && setSlotOne("X");
     isLoading && setSlotTwo("XX");
     isLoading && setSlotThree("XXX");
-    const [slot1, slot2, slot3] = getSlots();
-    setTimeout(() => setSlotOne(slot1), 1000);
-    setTimeout(() => setSlotTwo(slot2), 2000);
-    setTimeout(() => setSlotThree(slot3), 3000);
+    axios.get(`http://localhost:8000/roll/${userId}`).then((res) => {
+      setCredits(credits - 1)
+      setTimeout(() => setSlotOne(res.data.slots.slot1), 1000);
+      setTimeout(() => setSlotTwo(res.data.slots.slot2), 2000);
+      setTimeout(() => setSlotThree(res.data.slots.slot3), 3000);
+      setTimeout(() => setCredits(res.data.credits), 3000);
+    });
+
   };
 
   const handleCashOutClick = () => {
     setAccount(credits);
-    //end session
+    setCredits(0)
+    axios.get(`http://localhost:8000/cash-out/${userId}`).then((res) => {setAccount(res.data.credits)})
   };
 
   return (

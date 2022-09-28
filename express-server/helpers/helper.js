@@ -43,7 +43,7 @@
 };
 
  const calculatePoints = (credits, userRoll) => {
-  return credits -1 + userRoll;
+  return credits - 1 + userRoll;
 };
 
 module.exports = {
