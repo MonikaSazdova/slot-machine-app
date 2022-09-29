@@ -38,7 +38,6 @@
   if (credits > 60 && cheatingScore < 0.6) {
     return machineRoll;
   }
-  console.log("ROLL REWARD:", rollReward);
   return rollReward;
 };
 

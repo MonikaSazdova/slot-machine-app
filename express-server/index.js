@@ -3,7 +3,7 @@ const session = require("express-session");
 const { v4: uuid } = require("uuid");
 const app = express();
 const PORT = 8000;
-const { getSlots, machineRoll, userRoll, calculatePoints } = require("./helpers/helper");
+const { getSlots, machineRoll, userRoll, calculatePoints } = require("./helper");
 
 const slotOptions = ["C", "L", "O", "W"];
 const users = {}
@@ -27,7 +27,7 @@ app.use(
 //create a new session
 app.get("/", (req, res) => {
 const id = uuid()
-users[id] = {credits, slots}
+users[id] = {credits, slots, id}
   res.header("Access-Control-Allow-Origin", "*");
   res.json({credits, slots, id});
   res.end();
@@ -44,7 +44,6 @@ app.get("/roll/:id", function (req, res) {
     let rollReward = userRoll(user.credits, machineRollResult);
     user.credits = calculatePoints(user.credits, rollReward);
     user.slots = { slot1, slot2, slot3 };
-    console.log('CREDITS', user.credits, 'SLOTS', user.slots)
     res.json({credits: user.credits, slots: user.slots, id: user});
     res.end();
   } else {
@@ -56,7 +55,7 @@ app.get("/roll/:id", function (req, res) {
 app.get("/cash-out/:id", function (req, res) {
   const user = users[req.params.id]
   res.header("Access-Control-Allow-Origin", "*");
-  res.json({credits: user.credits, slots: {}, id: null});
+  res.json({credits: user.credits, slots: {slot1: 'END', slot2: 'END', slot3: 'END'}, id: null});
   res.end()
 })
 

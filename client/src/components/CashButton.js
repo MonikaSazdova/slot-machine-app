@@ -8,6 +8,7 @@ const CashButton = ({ onClick }) => {
 
   const moveBtnRand = (elm) => {
     elm.style.position = "absolute";
+    elm.style.background = '#E03519'
     const rand = Math.floor(Math.random() * 50 + 5) + "%";
     elm.style.top = rand;
     elm.style.left = rand;
@@ -15,13 +16,22 @@ const CashButton = ({ onClick }) => {
     elm.style.bottom = rand;
   };
 
+  const clickBtn = (elm) => {
+    elm.style.background = '#2EE019'
+  }
+
+  const disableBtn = (elm) => {
+    elm.disabled = true;
+    elm.style.background = '#E03519'
+  }
+
   const onHover = () => {
     const d = getPureRandom();
     if (d < 0.5) {
       moveBtnRand(ref.current);
     } else if (d < 0.9) {
-      ref.current.disabled = true;
-    } else console.log("Btn can be clicked");
+      disableBtn(ref.current)
+    } else {clickBtn(ref.current)}
   };
 
   return (
