@@ -14,6 +14,7 @@ const SlotMachine = () => {
   const [account, setAccount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [userId, setUserId] = useState(null);
+  const [message, setMessage] = useState('')
 
   useEffect(() => {
     setIsLoading(true);
@@ -27,10 +28,11 @@ const SlotMachine = () => {
   }, []);
 
   const handleRollCLick = () => {
+    userId === null && (setMessage('Please refresh the page to start a new game session!'))
     isLoading && setSlotOne("X");
     isLoading && setSlotTwo("XX");
     isLoading && setSlotThree("XXX");
-    axios.get(`http://localhost:8000/roll/${userId}`).then((res) => {
+    userId !== null && axios.get(`http://localhost:8000/roll/${userId}`).then((res) => {
       setCredits(credits - 1);
       setTimeout(() => setSlotOne(res.data.slots.slot1), 1000);
       setTimeout(() => setSlotTwo(res.data.slots.slot2), 2000);
@@ -42,6 +44,7 @@ const SlotMachine = () => {
   const handleCashOutClick = () => {
     setAccount(credits);
     setCredits(0);
+    setUserId(null);
     axios.get(`http://localhost:8000/cash-out/${userId}`).then((res) => {
       setAccount(res.data.credits);
       setSlotOne(res.data.slots.slot1);
@@ -59,6 +62,7 @@ const SlotMachine = () => {
       </div>
       <div>{`${SLOT.score}: ${credits}`}</div>
       <div>{`${SLOT.account}: ${account}`}</div>
+      <div>{message}</div>
     </div>
   );
 };

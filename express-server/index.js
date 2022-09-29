@@ -12,7 +12,7 @@ let credits = 10;
 let slots = {};
 
 app.use(cors())
-//I had issue with CORS and I was unable to use express-session (I instead created a mock db by defining users, credits and slots)
+//I had issue with CORS and I was not able to use express-session (I instead created a mock db by defining users, credits and slots)
 app.use(
   session({
     name: "RollSession",
